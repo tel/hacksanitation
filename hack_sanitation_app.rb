@@ -1,25 +1,37 @@
+# HackSanitation SMS handler
+# Original by Joseph Abrahamson <me@jspha.com>
+
 require 'sinatra'
 require 'sinatra/r18n'
 require 'twilio-ruby'
+require 'data_mapper'
+
+require './resources/subscription.rb'
+require './resources/person.rb'
 
 # TODO Validate that Twilio is actually sending these messages
 # TODO Validate via Digest
 # TODO Validate via HTTP Basic
 
+
 class HackSanitationApp < Sinatra::Base
 
+  # Set up i18n
   register Sinatra::R18n
   set :root, File.dirname(__FILE__)
+
+  # Create our DataMapper
+  @dm = DataMapper.setup(:default, "sqlite3::memory:")
 
   # These ENV variables must be configured via 'heroku config'
   @twilio_sid   = ENV['TWILIO_SID']
   @twilio_token = ENV['TWILIO_TOKEN']
   @client = Twilio::REST::Client.new( @twilio_sid, @twilio_token )
 
+  # This is the core route for the whole shebang
   post '/sms/incoming/' do
     # --> parse Twilio request
     # This part needs to be changed for another SMS handler in Ghana
-    
     from = params["From"]
     body = params["Body"]
 
