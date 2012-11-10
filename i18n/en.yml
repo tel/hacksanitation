@@ -1,0 +1,26 @@
+commands:
+  report:
+    - report
+    - shit
+    - poo
+    - poop
+    - bad
+  clean:
+    - clean
+    - good
+  follow:
+    - follow
+    - learn
+    - facts
+  stop:
+    - stop
+    - cease
+    - end  
+
+response:
+  report:
+    success: !!pl
+      n: Thank you for reporting, there are %1 other reports at this location
+    failure: 
+      - Thank you for reporting!
+      - thank YOU for reporting!
