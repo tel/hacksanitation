@@ -1,40 +1,43 @@
 commands:
   report:
-    - report
-    - shit
-    - poo
+    - yes
     - poop
-    - bad
+    - shit
   clean:
+    - no
     - clean
-    - good
   follow:
     - follow
     - learn
-    - facts
   stop:
     - stop
     - cease
-    - end  
+    - end 
 
 response:
   report:
     success: !!pl
-      n: 
-        - Thank you for reporting, there are %1 other reports at this location
-        - Thank you for reporting, there are %1 VARIANT
+    n:
+      - Thank you for reporting, there are %1 other reports at this location
+      - Thank you, %1 number of people texted about this location as well.  Reply with STOP if you do not what to receive messages from Clean Kumasi
+      - Meda wo ase. Poop near water makes you sick. Reply with END if you do not what to learn about Clean Kumasi
+      - Thank YOU!, Flies carry poop onto your food. Reply with STOP if you do not what to receive messages from clean Kumasi
+      - Ah! thank you - Food and water near poop is not clean.  Reply with  STOP if you do not what to receive messages from clean Kumasi
+      - Thanks, Flies poop every 4-5 mins.  They will do it on your food.  Reply with STOP if you do not what to receive messages from clean Kumasi
     failure: 
-      - Thank you for reporting!
-      - thank YOU for reporting! VARIANT
+      - Thank you for reporting.  Remember, Poop near water makes you sick. Reply with  STOP if you do not what to receive messages from clean Kumasi
+      - Thank you for reporting, there are %1 other reports at this location. Reply with STOP if you do not what to receive messages from Clean Kumasi 
   clean:
     success: 
-      - Thank you for reporting this place has been cleaned!
-      - Thank you for reporting this place has been cleaned! VARIANT
-      - Thank you for reporting this place has been cleaned! VARIANT
+      - Thank you for reporting, there are %1 other reports at this location
+      - Thank you, %1 number of people texted about this location as well.  Reply with STOP if you do not what to receive messages from Clean Kumasi
+      - Meda wo ase. Poop near water makes you sick. Reply with END if you do not what to learn about Clean Kumasi
+      - Thank YOU!, Flies carry poop onto your food. Reply with STOP if you do not what to receive messages from clean Kumasi
+      - Ah! thank you - Food and water near poop is not clean.  Reply with  STOP if you do not what to receive messages from clean Kumasi
+      - Thanks, Flies poop every 4-5 mins.  They will do it on your food.  Reply with STOP if you do not what to receive messages from clean Kumasi
     failure:
-      - Thank you for reporting this place has been cleaned!
-      - Thank you for reporting this place has been cleaned! VARIANT
-      - Thank you for reporting this place has been cleaned! VARIANT
+      - Thank you for reporting.  Remember, Poop near water makes you sick. Reply with  STOP if you do not what to receive messages from clean Kumasi
+      - Thank you for reporting, there are %1 other reports at this location. Reply with STOP if you do not what to receive messages from Clean Kumasi 
   follow:
     success:
       - Thank you following
@@ -56,6 +59,3 @@ response:
     failure:
       - Some not so successful message 
       - Some not so successful message VARIANT
-
-error:
-  no_tag: Sorry, there was no tag reported
