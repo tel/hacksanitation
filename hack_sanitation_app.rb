@@ -4,10 +4,10 @@
 require 'sinatra'
 require 'sinatra/r18n'
 require 'twilio-ruby'
-require 'data_mapper'
+# require 'data_mapper'
 
-require './resources/subscription.rb'
-require './resources/person.rb'
+# require './resources/subscription.rb'
+# require './resources/person.rb'
 
 # TODO Validate that Twilio is actually sending these messages
 # TODO Validate via Digest
@@ -21,12 +21,7 @@ class HackSanitationApp < Sinatra::Base
   set :root, File.dirname(__FILE__)
 
   # Create our DataMapper
-  @dm = DataMapper.setup(:default, "sqlite3::memory:")
-
-  # These ENV variables must be configured via 'heroku config'
-  @twilio_sid   = ENV['TWILIO_SID']
-  @twilio_token = ENV['TWILIO_TOKEN']
-  @client = Twilio::REST::Client.new( @twilio_sid, @twilio_token )
+  # @dm = DataMapper.setup(:default, "sqlite3::memory:")
 
   # This is the core route for the whole shebang
   post '/sms/incoming/' do
@@ -58,17 +53,40 @@ class HackSanitationApp < Sinatra::Base
 
   # The core of the response logic lives here
   def handle_response commands, tags, person
-    return "Hello!"
+    if commands[0] == :report
+      t.response.report.success(0).choice
+    elsif commands[0] == :clean
+      t.response.report.clean.success.choice
+    elsif commands[0] == :follow
+      t.response.report.follow.success.choice
+    elsif commands[0] == :stop
+      t.response.report.stop.success.choice
+    else
+      t.response.report.default.success.choice
+    end
+    commands
   end
 
   # Looks for all the command words in the message
   def parse_commands com, body
-    # Accumulate our command dictionary
-    dict = com.report + com.clean + com.follow + com.stop
-    # Get the words from the body
-    words = body.downcase.split(/\W+/)
-    
-    words & dict
+    commands = body.downcase.split(/\W+/).map { |w| map_to_command w, t.commands }
+    commands.delete_if { |c| c.nil? }
+    commands[0,1]
+  end
+
+  # Convert any command word to its cannonical version
+  def map_to_command word, dict
+    if dict.report.find_index word
+      :report
+    elsif dict.clean.find_index word
+      :clean
+    elsif dict.follow.find_index word
+      :follow
+    elsif dict.stop.find_index word
+      :stop
+    else
+      nil
+    end
   end
 
   # Looks for hashtags like #bang! ==> ['bang!']
@@ -83,6 +101,20 @@ class HackSanitationApp < Sinatra::Base
 
     # Trim off the "#"s
     words.each { |w| w.slice!(0) }
+  end
+
+  # Touches a person in the database, creating them if they don't
+  # currently exist and just updating their "last_seen" value if they
+  # do. Currently a nop!
+  def touch_person phone
+    nil
+  end
+
+  # Looks up a person in the database, currently this is a nop and
+  # just returns false. The system is memoryless until the database
+  # works!
+  def lookup_person phone
+    false
   end
 
   # Run the app if this is executed as a file

@@ -20,7 +20,39 @@ commands:
 response:
   report:
     success: !!pl
-      n: Thank you for reporting, there are %1 other reports at this location
+      n: 
+        - Thank you for reporting, there are %1 other reports at this location
+        - Thank you for reporting, there are %1 VARIANT
     failure: 
       - Thank you for reporting!
-      - thank YOU for reporting!
+      - thank YOU for reporting! VARIANT
+  clean:
+    success: 
+      - Thank you for reporting this place has been cleaned!
+      - Thank you for reporting this place has been cleaned! VARIANT
+      - Thank you for reporting this place has been cleaned! VARIANT
+    failure:
+      - Thank you for reporting this place has been cleaned!
+      - Thank you for reporting this place has been cleaned! VARIANT
+      - Thank you for reporting this place has been cleaned! VARIANT
+  follow:
+    success:
+      - Thank you following
+      - Thank you following VARIANT
+    failure:
+      - Oh no, it failed
+      - Oh no, it failed VARIANT
+  stop:
+    success:
+      - So sorry to see you go
+      - So sorry VARIANT
+    failure:
+      - "Oh no, you're still subscribed? That sucks"
+      - "Oh no, you're still subscribed? That sucks VARIANT"
+  default:
+    success:
+      - Some successful message
+      - Some successful message VARIANT
+    failure:
+      - Some not so successful message 
+      - Some not so successful message VARIANT
