@@ -29,6 +29,9 @@ class HackSanitationApp < Sinatra::Base
 
   # This is the core route for the whole shebang
   post '/sms/incoming/' do
+    
+    puts "Incoming!"
+
     # --> parse Twilio request
     # This part needs to be changed for another SMS handler in Ghana
     from = params["From"]
