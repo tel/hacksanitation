@@ -24,9 +24,18 @@ class HackSanitationApp < Sinatra::Base
     body = params["Body"]
 
     if from and body
+      # Store that this person has been seen
+      touch_person from
+
+      # Do the parsing
       commands = parse_commands t.commands, body
       tags     = parse_hashtags body
-      [200, {}, tags.join(' ')]
+      person   = lookup_person from
+      
+      # Handle the response
+      response = handle_response commands, tags, person
+
+      [200, {}, "<Response>#{response}</Response>"]
     else
       404  # What happened? Not Twilio, apparently
     end
@@ -34,6 +43,11 @@ class HackSanitationApp < Sinatra::Base
 
 
   private
+
+  # The core of the response logic lives here
+  def handle_response commands, tags, person
+    return "Hello!"
+  end
 
   # Looks for all the command words in the message
   def parse_commands com, body
@@ -59,5 +73,6 @@ class HackSanitationApp < Sinatra::Base
     words.each { |w| w.slice!(0) }
   end
 
+  # Run the app if this is executed as a file
   run! if app_file == $0
 end
