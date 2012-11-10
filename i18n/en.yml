@@ -56,3 +56,6 @@ response:
     failure:
       - Some not so successful message 
       - Some not so successful message VARIANT
+
+error:
+  no_tag: Sorry, there was no tag reported

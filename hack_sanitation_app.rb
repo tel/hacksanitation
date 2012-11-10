@@ -4,6 +4,8 @@
 require 'sinatra'
 require 'sinatra/r18n'
 require 'twilio-ruby'
+require 'net/http'
+require 'json'
 # require 'data_mapper'
 
 # require './resources/subscription.rb'
@@ -15,6 +17,8 @@ require 'twilio-ruby'
 
 
 class HackSanitationApp < Sinatra::Base
+
+  @api = ENV['API_URI'] or abort( "No configured API_URI, hack_sanitation_app.rb: l21" )
 
   # Set up i18n
   register Sinatra::R18n
@@ -40,7 +44,7 @@ class HackSanitationApp < Sinatra::Base
       person   = lookup_person from
       
       # Handle the response
-      response = handle_response commands, tags, person
+      response = handle_response commands, tags, from, person
 
       [200, {}, "<Response>#{response}</Response>"]
     else
@@ -52,19 +56,67 @@ class HackSanitationApp < Sinatra::Base
   private
 
   # The core of the response logic lives here
-  def handle_response commands, tags, person
-    if commands[0] == :report
-      t.response.report.success(0).choice
-    elsif commands[0] == :clean
-      t.response.report.clean.success.choice
-    elsif commands[0] == :follow
-      t.response.report.follow.success.choice
-    elsif commands[0] == :stop
-      t.response.report.stop.success.choice
+  def handle_response commands, tags, number, person
+    location = tags[0]
+
+    if location
+      if commands[0] == :report
+        puts "Reported"
+
+        # Send API call
+        # path = '/location/' + location + '/sighting'
+        # request = Net::HTTP::Post.new(path)
+        # request.body = "phonenumber=#{number}"
+        # responseSighted = Net::HTTP.new(@api).start {|http| http.request(request) }
+        # puts responseSighted
+
+        # path = '/location/' + location
+        # request = Net::HTTP::Get.new(path)
+        # response = Net::HTTP.new(@api).start {|http| http.request(request) }
+
+        # info = JSON.parse(response.body) if response.code == 200
+
+        if true # responseSighted.code == 200 && info
+          num = 1 # info["crapcount"]
+          t.response.report.success(num).choice
+        else
+          t.response.report.failure.choice
+        end
+
+
+      elsif commands[0] == :clean
+        puts "Cleaned"
+        # Send API call
+        # path = '/location/' + location + '/clean'
+        # request = Net::HTTP::Post.new(target)
+        # response = Net::HTTP.new(@api).start {|http| http.request(request) }
+
+        response = Object.new
+        response.code = 200
+
+        if true # response.code == 200
+          t.response.clean.success.choice
+        else
+          t.response.clean.failure.choice
+        end
+
+
+        # elsif commands[0] == :follow
+        #   t.response.follow.success.choice
+
+
+      elsif commands[0] == :stop
+        puts "Stopped"
+        puts t.response.stop.success.choice
+        t.response.stop.success.choice
+      else
+        puts "Defaulted"
+        t.response.default.success.choice
+      end
     else
-      t.response.report.default.success.choice
+        puts "No tag!"
+      t.error.no_tag
     end
-    commands
   end
 
   # Looks for all the command words in the message
@@ -80,8 +132,8 @@ class HackSanitationApp < Sinatra::Base
       :report
     elsif dict.clean.find_index word
       :clean
-    elsif dict.follow.find_index word
-      :follow
+    # elsif dict.follow.find_index word
+    #   :follow
     elsif dict.stop.find_index word
       :stop
     else
