@@ -48,6 +48,7 @@ class HackSanitationApp < Sinatra::Base
 
       [200, {}, "<Response>#{response}</Response>"]
     else
+      puts "What what!?"
       404  # What happened? Not Twilio, apparently
     end
   end
